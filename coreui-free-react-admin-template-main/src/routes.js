@@ -17,6 +17,9 @@ import React from 'react'
 
 // Dashboard
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+
+// Fleet Management
+const VehicleRegistry = React.lazy(() => import('./views/vehicleRegistry/VehicleRegistry'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -68,6 +71,9 @@ const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
 const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
+const Maintenance = React.lazy(() => import('./views/maintenance/Maintenance'))
+const FuelExpenses = React.lazy(() => import('./views/fuelExpenses/FuelExpenses'))
+const Analytics = React.lazy(() => import('./views/analytics/Analytics'))
 
 /**
  * Array of route configuration objects
@@ -89,6 +95,8 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 export const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/fleet-management', name: 'Fleet Management', exact: true },
+  { path: '/fleet-management/vehicle-registry', name: 'Vehicle Registry', element: VehicleRegistry },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
@@ -134,6 +142,9 @@ export const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/maintenance', name: 'Maintenance', element: Maintenance },
+  { path: '/fuel-expenses', name: 'Fuel & Expenses', element: FuelExpenses },
+  { path: '/analytics', name: 'Analytics', element: Analytics },
 ]
 
 export default routes

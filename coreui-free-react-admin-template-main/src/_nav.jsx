@@ -20,8 +20,9 @@ import {
   cilSettings,
   cilDollar,
   cilChartLine,
+  cilList,
 } from '@coreui/icons'
-import { CNavItem, CNavTitle } from '@coreui/react'
+import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
@@ -34,11 +35,19 @@ const _nav = [
     to: '/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
   },
+
   {
-    component: CNavItem,
-    name: 'Fleet',
-    to: '/fleet',
+    component: CNavGroup,
+    name: 'Fleet Management',
     icon: <CIcon icon={cilTruck} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Vehicle Registry',
+        to: '/dashboard/fleet-management/vehicle-registry',
+        icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+      },
+    ],
   },
   {
     component: CNavItem,
