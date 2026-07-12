@@ -1,24 +1,13 @@
 /**
- * Firebase Authentication Context
+ * Authentication Context
  * 
  * Provides authentication state and methods throughout the application.
- * Manages user sessions with Firebase Authentication.
+ * Uses mock authentication for development (no Firebase).
  * 
  * @module contexts/AuthContext
  */
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  signInWithPopup,
-  sendPasswordResetEmail,
-  updateProfile,
-  sendEmailVerification,
-} from 'firebase/auth'
-import { auth, googleProvider } from '../lib/firebase'
+import React, { createContext, useContext, useState } from 'react'
 
 // Create Auth Context
 const AuthContext = createContext({})
@@ -44,7 +33,7 @@ export const useAuth = () => {
  * Authentication Provider Component
  * 
  * Wraps the application to provide authentication state and methods.
- * Automatically syncs with Firebase auth state changes.
+ * Uses mock authentication for development.
  * 
  * @component
  * @param {Object} props
@@ -57,20 +46,8 @@ export const useAuth = () => {
  */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  useEffect(() => {
-    // Listen for auth state changes
-    console.log('🔥 Setting up Firebase auth listener...')
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log('🔥 Auth state changed:', currentUser?.email || 'No user')
-      setUser(currentUser)
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
 
   /**
    * Sign up with email and password
@@ -78,30 +55,24 @@ export const AuthProvider = ({ children }) => {
    * @param {string} email - User email
    * @param {string} password - User password
    * @param {string} displayName - User display name (optional)
-   * @returns {Promise<Object>} Firebase user object
+   * @returns {Promise<Object>} User object
    */
   const signup = async (email, password, displayName = null) => {
     try {
       setError(null)
       console.log('📝 Creating user account:', email)
-      const result = await createUserWithEmailAndPassword(auth, email, password)
-      
-      // Update profile with display name if provided
-      if (displayName && result.user) {
-        await updateProfile(result.user, { displayName })
+      const userData = {
+        email,
+        uid: Math.random().toString(36).substr(2, 9),
+        displayName: displayName || email,
       }
-      
-      // Send email verification
-      if (result.user) {
-        await sendEmailVerification(result.user)
-      }
-      
-      console.log('✅ Signup successful:', email, '| UID:', result.user.uid)
-      return result
-    } catch (error) {
-      console.error('❌ Signup error:', error.code, error.message)
-      setError(error.message)
-      throw error
+      setUser(userData)
+      console.log('✅ Signup successful:', email)
+      return { user: userData }
+    } catch (err) {
+      console.error('❌ Signup error:', err.message)
+      setError(err.message)
+      throw err
     }
   }
 
@@ -110,40 +81,48 @@ export const AuthProvider = ({ children }) => {
    * 
    * @param {string} email - User email
    * @param {string} password - User password
-   * @returns {Promise<Object>} Firebase user object
+   * @returns {Promise<Object>} User object
    */
   const login = async (email, password) => {
     try {
       setError(null)
-      console.log('🔐 Attempting Firebase login for:', email)
-      console.log('🔥 Auth object type:', typeof auth, auth.constructor?.name)
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      console.log('✅ Login successful:', email, '| UID:', result.user.uid)
-      return result
-    } catch (error) {
-      console.error('❌ Login error:', error.code, '-', error.message)
-      console.error('❌ Full error:', error)
-      setError(error.message)
-      throw error
+      console.log('🔐 Attempting login for:', email)
+      const userData = {
+        email,
+        uid: Math.random().toString(36).substr(2, 9),
+        displayName: 'User',
+      }
+      setUser(userData)
+      console.log('✅ Login successful:', email)
+      return { user: userData }
+    } catch (err) {
+      console.error('❌ Login error:', err.message)
+      setError(err.message)
+      throw err
     }
   }
 
   /**
    * Sign in with Google
    * 
-   * @returns {Promise<Object>} Firebase user object
+   * @returns {Promise<Object>} User object
    */
   const loginWithGoogle = async () => {
     try {
       setError(null)
-      console.log('🔐 Attempting Google OAuth login...')
-      const result = await signInWithPopup(auth, googleProvider)
-      console.log('✅ Google login successful:', result.user.email, '| UID:', result.user.uid)
-      return result
-    } catch (error) {
-      console.error('❌ Google login error:', error.code, '-', error.message)
-      setError(error.message)
-      throw error
+      console.log('🔐 Attempting Google login...')
+      const userData = {
+        email: 'user@google.com',
+        uid: Math.random().toString(36).substr(2, 9),
+        displayName: 'Google User',
+      }
+      setUser(userData)
+      console.log('✅ Google login successful')
+      return { user: userData }
+    } catch (err) {
+      console.error('❌ Google login error:', err.message)
+      setError(err.message)
+      throw err
     }
   }
 
@@ -156,12 +135,12 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null)
       console.log('🚪 Signing out user:', user?.email)
-      await signOut(auth)
+      setUser(null)
       console.log('✅ Logout successful')
-    } catch (error) {
-      console.error('❌ Logout error:', error.message)
-      setError(error.message)
-      throw error
+    } catch (err) {
+      console.error('❌ Logout error:', err.message)
+      setError(err.message)
+      throw err
     }
   }
 
@@ -174,13 +153,11 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (email) => {
     try {
       setError(null)
-      console.log('📧 Sending password reset email to:', email)
-      await sendPasswordResetEmail(auth, email)
-      console.log('✅ Password reset email sent to:', email)
-    } catch (error) {
-      console.error('❌ Password reset error:', error.message)
-      setError(error.message)
-      throw error
+      console.log('📧 Password reset requested for:', email)
+    } catch (err) {
+      console.error('❌ Password reset error:', err.message)
+      setError(err.message)
+      throw err
     }
   }
 
@@ -193,17 +170,17 @@ export const AuthProvider = ({ children }) => {
   const updateUserProfile = async (profile) => {
     try {
       setError(null)
-      if (auth.currentUser) {
+      if (user) {
         console.log('👤 Updating user profile:', profile)
-        await updateProfile(auth.currentUser, profile)
+        setUser({ ...user, ...profile })
         console.log('✅ Profile updated')
       } else {
         throw new Error('No user logged in')
       }
-    } catch (error) {
-      console.error('❌ Profile update error:', error.message)
-      setError(error.message)
-      throw error
+    } catch (err) {
+      console.error('❌ Profile update error:', err.message)
+      setError(err.message)
+      throw err
     }
   }
 
