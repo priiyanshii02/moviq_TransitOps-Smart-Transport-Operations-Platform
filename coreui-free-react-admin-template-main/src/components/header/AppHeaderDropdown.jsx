@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   CAvatar,
   CBadge,
@@ -19,19 +20,47 @@ import {
   cilSettings,
   cilTask,
   cilUser,
+  cilAccountLogout,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import { useAuth } from '../../contexts/AuthContext'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
 const AppHeaderDropdown = () => {
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  /**
+   * Handle user logout
+   */
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/login')
+    } catch (error) {
+      console.error('Logout failed:', error.message)
+      alert('Failed to logout. Please try again.')
+    }
+  }
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
         <CAvatar src={avatar8} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
+        <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">
+          Account
+          {user?.email && (
+            <div className="small text-body-secondary mt-1 text-truncate" style={{ maxWidth: '200px' }}>
+              {user.email}
+            </div>
+          )}
+          {user?.displayName && (
+            <div className="small fw-normal mt-1">{user.displayName}</div>
+          )}
+        </CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
           Updates
@@ -87,6 +116,14 @@ const AppHeaderDropdown = () => {
         <CDropdownItem href="#">
           <CIcon icon={cilLockLocked} className="me-2" />
           Lock Account
+        </CDropdownItem>
+        <CDropdownItem 
+          onClick={handleLogout} 
+          style={{ cursor: 'pointer' }}
+          className="text-danger"
+        >
+          <CIcon icon={cilAccountLogout} className="me-2" />
+          Logout
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CButton, CForm, CFormInput, CFormLabel, CFormCheck } from '@coreui/react'
+import { CButton, CForm, CFormInput, CFormLabel, CFormCheck, CAlert } from '@coreui/react'
 import { Eye, EyeOff, Mail, Sparkles } from 'lucide-react'
+import { useAuth } from '../../../contexts/AuthContext'
 import './AnimatedLogin.css'
 
 const Pupil = ({ size = 12, maxDistance = 5, pupilColor = 'black', forceLookX, forceLookY }) => {
@@ -229,19 +230,52 @@ function AnimatedLogin() {
   const yellowPos = calculatePosition(yellowRef)
   const orangePos = calculatePosition(orangeRef)
 
+  const { user, login, loginWithGoogle } = useAuth()
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      console.log('✅ User already authenticated, redirecting to dashboard')
+      navigate('/dashboard', { replace: true })
+    }
+  }, [user, navigate])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setIsLoading(true)
 
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    try {
+      await login(email, password)
+      console.log('🎉 Login successful!')
+      // Don't navigate here - let the useEffect above handle it when user state updates
+    } catch (err) {
+      // Firebase error messages
+      const errorMessage = err.message
+        .replace('Firebase: ', '')
+        .replace(/\(auth\/[^)]+\)/, '')
+        .trim()
+      setError(errorMessage || 'Failed to login. Please check your credentials.')
+      setIsLoading(false)
+    }
+  }
 
-    // Always allow login for now - authentication will be added later
-    console.log('✅ Login successful!')
-    localStorage.setItem('isAuthenticated', 'true')
-    navigate('/dashboard')
-    
-    setIsLoading(false)
+  const handleGoogleLogin = async () => {
+    setError('')
+    setIsLoading(true)
+
+    try {
+      await loginWithGoogle()
+      console.log('🎉 Google login successful!')
+      // Don't navigate here - let the useEffect above handle it when user state updates
+    } catch (err) {
+      const errorMessage = err.message
+        .replace('Firebase: ', '')
+        .replace(/\(auth\/[^)]+\)/, '')
+        .trim()
+      setError(errorMessage || 'Failed to login with Google.')
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -601,7 +635,7 @@ function AnimatedLogin() {
             </CButton>
           </CForm>
 
-          <CButton color="light" className="w-100 google-btn">
+          <CButton color="light" className="w-100 google-btn" onClick={handleGoogleLogin} disabled={isLoading}>
             <Mail size={20} className="me-2" />
             Log in with Google
           </CButton>
