@@ -7,56 +7,26 @@
  * @module lib/firebase
  */
 
-import { initializeApp } from 'firebase/app'
-import { getAuth, GoogleAuthProvider } from 'firebase/auth'
-import { getAnalytics } from 'firebase/analytics'
-
-// Firebase configuration from environment variables
+// Mock Firebase configuration for development
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'mock-api-key',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'mock-app.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'mock-project',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'mock-bucket.appspot.com',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || 'mock-sender',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || 'mock-app-id',
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || 'mock-measurement',
 }
 
-// Validate Firebase configuration
-if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
-  console.error('❌ Missing Firebase configuration. Please check your .env file.')
-  console.log('Required variables:')
-  console.log('- VITE_FIREBASE_API_KEY')
-  console.log('- VITE_FIREBASE_AUTH_DOMAIN')
-  console.log('- VITE_FIREBASE_PROJECT_ID')
-  console.log('- VITE_FIREBASE_STORAGE_BUCKET')
-  console.log('- VITE_FIREBASE_MESSAGING_SENDER_ID')
-  console.log('- VITE_FIREBASE_APP_ID')
+// Mock Firebase auth
+export const auth = {
+  currentUser: null,
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
+// Mock Google Auth Provider
+export const googleProvider = {}
 
-// Initialize Firebase Authentication
-export const auth = getAuth(app)
+// Mock analytics
+export const analytics = null
 
-// Initialize Google Auth Provider
-export const googleProvider = new GoogleAuthProvider()
-googleProvider.setCustomParameters({
-  prompt: 'select_account',
-})
-
-// Initialize Firebase Analytics (optional)
-let analytics = null
-if (typeof window !== 'undefined') {
-  try {
-    analytics = getAnalytics(app)
-  } catch (error) {
-    console.warn('Firebase Analytics not initialized:', error.message)
-  }
-}
-
-export { analytics }
-
-console.log('✅ Firebase initialized successfully')
-console.log('📧 Auth domain:', firebaseConfig.authDomain)
+console.log('✅ Firebase configuration loaded (development mode)')

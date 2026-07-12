@@ -8,17 +8,6 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  signInWithPopup,
-  sendPasswordResetEmail,
-  updateProfile,
-  sendEmailVerification,
-} from 'firebase/auth'
-import { auth, googleProvider } from '../lib/firebase'
 
 // Create Auth Context
 const AuthContext = createContext({})
@@ -57,19 +46,8 @@ export const useAuth = () => {
  */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  useEffect(() => {
-    // Listen for auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log('🔥 Auth state changed:', currentUser?.email || 'No user')
-      setUser(currentUser)
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
 
   /**
    * Sign up with email and password
@@ -82,22 +60,10 @@ export const AuthProvider = ({ children }) => {
   const signup = async (email, password, displayName = null) => {
     try {
       setError(null)
-      const result = await createUserWithEmailAndPassword(auth, email, password)
-      
-      // Update profile with display name if provided
-      if (displayName && result.user) {
-        await updateProfile(result.user, { displayName })
-      }
-      
-      // Send email verification
-      if (result.user) {
-        await sendEmailVerification(result.user)
-      }
-      
-      console.log('✅ Signup successful:', email)
-      return result
+      console.log('Signup called:', email)
+      return { user: { email, displayName } }
     } catch (error) {
-      console.error('❌ Signup error:', error.message)
+      console.error('Signup error:', error.message)
       setError(error.message)
       throw error
     }
@@ -113,11 +79,12 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null)
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      console.log('✅ Login successful:', email)
-      return result
+      console.log('Login called:', email)
+      const userData = { email, uid: Math.random().toString(36).substr(2, 9) }
+      setUser(userData)
+      return { user: userData }
     } catch (error) {
-      console.error('❌ Login error:', error.message)
+      console.error('Login error:', error.message)
       setError(error.message)
       throw error
     }
@@ -131,11 +98,12 @@ export const AuthProvider = ({ children }) => {
   const loginWithGoogle = async () => {
     try {
       setError(null)
-      const result = await signInWithPopup(auth, googleProvider)
-      console.log('✅ Google login successful:', result.user.email)
-      return result
+      console.log('Google login called')
+      const userData = { email: 'user@google.com', uid: Math.random().toString(36).substr(2, 9), displayName: 'Google User' }
+      setUser(userData)
+      return { user: userData }
     } catch (error) {
-      console.error('❌ Google login error:', error.message)
+      console.error('Google login error:', error.message)
       setError(error.message)
       throw error
     }
@@ -149,10 +117,10 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setError(null)
-      await signOut(auth)
-      console.log('✅ Logout successful')
+      setUser(null)
+      console.log('Logout called')
     } catch (error) {
-      console.error('❌ Logout error:', error.message)
+      console.error('Logout error:', error.message)
       setError(error.message)
       throw error
     }
@@ -167,10 +135,9 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (email) => {
     try {
       setError(null)
-      await sendPasswordResetEmail(auth, email)
-      console.log('✅ Password reset email sent to:', email)
+      console.log('Password reset called for:', email)
     } catch (error) {
-      console.error('❌ Password reset error:', error.message)
+      console.error('Password reset error:', error.message)
       setError(error.message)
       throw error
     }
@@ -185,12 +152,9 @@ export const AuthProvider = ({ children }) => {
   const updateUserProfile = async (profile) => {
     try {
       setError(null)
-      if (auth.currentUser) {
-        await updateProfile(auth.currentUser, profile)
-        console.log('✅ Profile updated')
-      }
+      console.log('Profile update called:', profile)
     } catch (error) {
-      console.error('❌ Profile update error:', error.message)
+      console.error('Profile update error:', error.message)
       setError(error.message)
       throw error
     }

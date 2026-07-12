@@ -52,37 +52,37 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Drivers',
-    to: '/drivers',
+    to: '/dashboard/drivers',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Trips',
-    to: '/trips',
+    to: '/dashboard/trips',
     icon: <CIcon icon={cilMap} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Maintenance',
-    to: '/maintenance',
+    to: '/dashboard/maintenance',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Fuel & Expenses',
-    to: '/fuel-expenses',
+    to: '/dashboard/fuel-expenses',
     icon: <CIcon icon={cilDollar} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Analytics',
-    to: '/analytics',
+    to: '/dashboard/analytics',
     icon: <CIcon icon={cilChartLine} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Settings',
-    to: '/settings',
+    to: '/dashboard/settings',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
   },
 ]
