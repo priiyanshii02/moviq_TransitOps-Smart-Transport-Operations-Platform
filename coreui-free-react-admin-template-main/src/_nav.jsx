@@ -56,12 +56,7 @@ const _nav = [
       },
     ],
   },
-  {
-    component: CNavItem,
-    name: 'Drivers',
-    to: '/dashboard/drivers',
-    icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
-  },
+  
   {
     component: CNavItem,
     name: 'Trips',
