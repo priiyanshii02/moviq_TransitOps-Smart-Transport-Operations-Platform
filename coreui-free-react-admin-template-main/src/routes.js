@@ -73,6 +73,7 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const Maintenance = React.lazy(() => import('./views/maintenance/Maintenance'))
 const FuelExpenses = React.lazy(() => import('./views/fuelExpenses/FuelExpenses'))
+const Analytics = React.lazy(() => import('./views/analytics/Analytics'))
 
 /**
  * Array of route configuration objects
@@ -143,6 +144,7 @@ export const routes = [
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/maintenance', name: 'Maintenance', element: Maintenance },
   { path: '/fuel-expenses', name: 'Fuel & Expenses', element: FuelExpenses },
+  { path: '/analytics', name: 'Analytics', element: Analytics },
 ]
 
 export default routes
