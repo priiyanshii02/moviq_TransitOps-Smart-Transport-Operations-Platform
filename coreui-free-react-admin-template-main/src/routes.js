@@ -17,6 +17,9 @@ import React from 'react'
 
 // Dashboard
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+
+// Fleet Management
+const VehicleRegistry = React.lazy(() => import('./views/vehicleRegistry/VehicleRegistry'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -89,6 +92,8 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 export const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/fleet-management', name: 'Fleet Management', exact: true },
+  { path: '/fleet-management/vehicle-registry', name: 'Vehicle Registry', element: VehicleRegistry },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
