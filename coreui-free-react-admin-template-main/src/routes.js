@@ -20,6 +20,7 @@ const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
 // Fleet Management
 const VehicleRegistry = React.lazy(() => import('./views/vehicleRegistry/VehicleRegistry'))
+const DriverManagement = React.lazy(() => import('./views/driverManagement/DriverManagement'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -71,6 +72,7 @@ const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
 const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
+const Trips = React.lazy(() => import('./views/trips/Trips'))
 const Maintenance = React.lazy(() => import('./views/maintenance/Maintenance'))
 const FuelExpenses = React.lazy(() => import('./views/fuelExpenses/FuelExpenses'))
 const Analytics = React.lazy(() => import('./views/analytics/Analytics'))
@@ -98,6 +100,7 @@ export const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/fleet-management', name: 'Fleet Management', exact: true },
   { path: '/fleet-management/vehicle-registry', name: 'Vehicle Registry', element: VehicleRegistry },
+  { path: '/fleet-management/driver-management', name: 'Driver Management', element: DriverManagement },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
@@ -143,6 +146,7 @@ export const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/trips', name: 'Trips', element: Trips },
   { path: '/maintenance', name: 'Maintenance', element: Maintenance },
   { path: '/fuel-expenses', name: 'Fuel & Expenses', element: FuelExpenses },
   { path: '/analytics', name: 'Analytics', element: Analytics },

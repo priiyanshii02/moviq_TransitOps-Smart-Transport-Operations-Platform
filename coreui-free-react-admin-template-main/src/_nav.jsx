@@ -21,6 +21,7 @@ import {
   cilDollar,
   cilChartLine,
   cilList,
+  cilUser,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -46,6 +47,12 @@ const _nav = [
         name: 'Vehicle Registry',
         to: '/dashboard/fleet-management/vehicle-registry',
         icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Driver Management',
+        to: '/dashboard/fleet-management/driver-management',
+        icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
       },
     ],
   },
